@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace TouchInputAPI
+namespace TouchIME.Input
 {
     /// <summary>
     /// Raised when attempting to capture input from a touch source
     /// that does not currently support/allow capturing.
     /// </summary>
-    public sealed class TouchCaptureException : Exception
+    public sealed class TouchCaptureException : InvalidOperationException
     {
         /// <summary>
         /// Creates a new instance of this exception.

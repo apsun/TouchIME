@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace TouchInputAPI
+namespace TouchIME.Input
 {
     /// <summary>
     /// Event data for a touch event. Use <see cref="ITouchInput.TouchArea"/>

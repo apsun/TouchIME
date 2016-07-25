@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Drawing;
 
-namespace TouchInputAPI
+namespace TouchIME.Input
 {
+    /// <summary>
+    /// Interface to a touch input source.
+    /// </summary>
     public interface ITouchInput : IDisposable
     {
         /// <summary>
         /// Event raised when the user begins touching the device. This
-        /// is only raised after calling <see cref="BeginTouchCapture"/>
-        /// and before calling <see cref="EndTouchCapture"/>.
+        /// is only raised after calling <see cref="StartTouchCapture"/>
+        /// and before calling <see cref="StopTouchCapture"/>.
         /// </summary>
         event EventHandler TouchStarted;
 
         /// <summary>
         /// Event raised when the position of the touch changes.
-        /// This is only raised after calling <see cref="BeginTouchCapture"/>
-        /// and before calling <see cref="EndTouchCapture"/>. 
+        /// This is only raised after calling <see cref="StartTouchCapture"/>
+        /// and before calling <see cref="StopTouchCapture"/>. 
         /// </summary>
         event EventHandler<TouchEventArgs> TouchMoved;
 
         /// <summary>
         /// Event raised when the user stops touching the device. This
-        /// is only raised after calling <see cref="BeginTouchCapture"/>
-        /// and before calling <see cref="EndTouchCapture"/>.
+        /// is only raised after calling <see cref="StartTouchCapture"/>
+        /// and before calling <see cref="StopTouchCapture"/>.
         /// </summary>
         event EventHandler TouchEnded;
 
@@ -31,7 +34,7 @@ namespace TouchInputAPI
         /// of the input source. The coordinate axis is aligned such
         /// that (0,0) is located at the top-left corner.
         /// </summary>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="ObjectDisposedException">
         /// Thrown if the object has been disposed.
         /// </exception>
         Rectangle TouchArea { get; }
@@ -44,18 +47,18 @@ namespace TouchInputAPI
         /// <exception cref="TouchCaptureException">
         /// Thrown if touch input could not be captured.
         /// </exception>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="ObjectDisposedException">
         /// Thrown if the object has been disposed.
         /// </exception>
-        void BeginTouchCapture();
+        void StartTouchCapture();
 
         /// <summary>
         /// Ends touch capturing. This restores normal cursor behavior
         /// to the system.
         /// </summary>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="ObjectDisposedException">
         /// Thrown if the object has been disposed.
         /// </exception>
-        void EndTouchCapture();
+        void StopTouchCapture();
     }
 }

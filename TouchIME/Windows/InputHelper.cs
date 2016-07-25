@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TouchIME
+namespace TouchIME.Windows
 {
-    public static class SendInputHelper
+    /// <summary>
+    /// Sends keystrokes to other applications using the
+    /// <code>SendInput</code> Windows API.
+    /// </summary>
+    public static class InputHelper
     {
         private enum InputType : uint
         {
@@ -81,6 +85,14 @@ namespace TouchIME
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint SendInput(uint num, Input[] inputs, int size);
 
+        private static readonly int InputSize = Marshal.SizeOf(typeof(Input));
+
+        /// <summary>
+        /// Moves the cursor to the specified coordinates. The coordinates
+        /// must be between 0 (left/top) and 65535 (bottom/right).
+        /// </summary>
+        /// <param name="normalizedX">The normalized X coordinates.</param>
+        /// <param name="normalizedY">The normalized Y coordinates.</param>
         public static void SendMouseMove(ushort normalizedX, ushort normalizedY)
         {
             Input[] inputs = new Input[1];
@@ -88,9 +100,12 @@ namespace TouchIME
             inputs[0].mouse.dx = normalizedX;
             inputs[0].mouse.dy = normalizedY;
             inputs[0].mouse.flags = MouseInputFlags.Move | MouseInputFlags.Absolute;
-            SendInput(1, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput(1, inputs, InputSize);
         }
 
+        /// <summary>
+        /// Simulates a mouse left click.
+        /// </summary>
         public static void SendMouseLeftClick()
         {
             Input[] inputs = new Input[2];
@@ -98,9 +113,12 @@ namespace TouchIME
             inputs[0].mouse.flags = MouseInputFlags.LeftDown;
             inputs[1].type = InputType.Mouse;
             inputs[1].mouse.flags = MouseInputFlags.LeftUp;
-            SendInput(2, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput(2, inputs, InputSize);
         }
 
+        /// <summary>
+        /// Simulates a mouse right click.
+        /// </summary>
         public static void SendMouseRightClick()
         {
             Input[] inputs = new Input[2];
@@ -108,9 +126,28 @@ namespace TouchIME
             inputs[0].mouse.flags = MouseInputFlags.RightDown;
             inputs[1].type = InputType.Mouse;
             inputs[1].mouse.flags = MouseInputFlags.RightUp;
-            SendInput(2, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput(2, inputs, InputSize);
         }
 
+        /// <summary>
+        /// Simulates a single keystroke (down and up).
+        /// </summary>
+        /// <param name="key">The key to press.</param>
+        public static void SendKeyboardKey(Key key)
+        {
+            Input[] inputs = new Input[2];
+            inputs[0].type = InputType.Keyboard;
+            inputs[0].keyboard.virtualKeyCode = (ushort)key;
+            inputs[1].type = InputType.Keyboard;
+            inputs[1].keyboard.virtualKeyCode = (ushort)key;
+            inputs[1].keyboard.flags = KeyboardInputFlags.KeyUp;
+            SendInput(2, inputs, InputSize);
+        }
+
+        /// <summary>
+        /// Sends the specified text by simulating multiple keystrokes.
+        /// </summary>
+        /// <param name="text">The text to enter.</param>
         public static void SendKeyboardText(string text)
         {
             Input[] inputs = new Input[text.Length * 2];
@@ -123,7 +160,7 @@ namespace TouchIME
                 inputs[i * 2 + 1].keyboard.scanCode = text[i];
                 inputs[i * 2 + 1].keyboard.flags = KeyboardInputFlags.Unicode | KeyboardInputFlags.KeyUp;
             }
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput((uint)inputs.Length, inputs, InputSize);
         }
     }
 }

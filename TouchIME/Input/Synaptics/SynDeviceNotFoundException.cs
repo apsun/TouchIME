@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SynapticsInput
+namespace TouchIME.Input.Synaptics
 {
     /// <summary>
     /// Exception thrown when an appropriate Synaptics device

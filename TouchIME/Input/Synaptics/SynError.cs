@@ -1,4 +1,4 @@
-﻿namespace SynapticsInput
+﻿namespace TouchIME.Input.Synaptics
 {
     /// <summary>
     /// Definitions of error codes returned by the Synaptics COM API.

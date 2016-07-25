@@ -5,10 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TouchIME", "TouchIME\TouchIME.csproj", "{B4768F2A-C739-4BE4-A9AB-1053DA34DC83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynapticsInput", "SynAdapter\SynapticsInput.csproj", "{26AAB843-F6F8-497F-869D-29F7C5E1E8F4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TouchInputAPI", "TouchInputAPI\TouchInputAPI.csproj", "{A4E91523-E35C-45E9-BCAD-D4374C55124E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{B4768F2A-C739-4BE4-A9AB-1053DA34DC83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4768F2A-C739-4BE4-A9AB-1053DA34DC83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4768F2A-C739-4BE4-A9AB-1053DA34DC83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26AAB843-F6F8-497F-869D-29F7C5E1E8F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26AAB843-F6F8-497F-869D-29F7C5E1E8F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26AAB843-F6F8-497F-869D-29F7C5E1E8F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26AAB843-F6F8-497F-869D-29F7C5E1E8F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4E91523-E35C-45E9-BCAD-D4374C55124E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4E91523-E35C-45E9-BCAD-D4374C55124E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4E91523-E35C-45E9-BCAD-D4374C55124E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4E91523-E35C-45E9-BCAD-D4374C55124E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

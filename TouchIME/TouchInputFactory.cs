@@ -1,5 +1,5 @@
-﻿using SynapticsInput;
-using TouchInputAPI;
+﻿using TouchIME.Input;
+using TouchIME.Input.Synaptics;
 
 namespace TouchIME
 {

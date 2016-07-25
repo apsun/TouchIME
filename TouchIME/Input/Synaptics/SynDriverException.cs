@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SynapticsInput
+namespace TouchIME.Input.Synaptics
 {
     /// <summary>
     /// Exception thrown if the Synaptics kernel-mode driver

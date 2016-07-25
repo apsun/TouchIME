@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using SYNCTRLLib;
-using TouchInputAPI;
 
-namespace SynapticsInput
+namespace TouchIME.Input.Synaptics
 {
     /// <summary>
     /// Managed wrapper for the Synaptics touchpad API.
@@ -82,7 +82,7 @@ namespace SynapticsInput
             _highY = _device.GetLongProperty(SynDeviceProperty.SP_YHiSensor);
         }
         
-        public void BeginTouchCapture()
+        public void StartTouchCapture()
         {
             EnsureNotDisposed();
             if (_acquired) return;
@@ -102,7 +102,7 @@ namespace SynapticsInput
             _acquired = true;
         }
         
-        public void EndTouchCapture()
+        public void StopTouchCapture()
         {
             EnsureNotDisposed();
             if (!_acquired) return;
@@ -136,6 +136,7 @@ namespace SynapticsInput
                 //
                 // Packet data was correctly exported but the packet's sequence
                 // number was not sequential with the previously exported packet.
+                Debug.WriteLine("Packet sequence out of order");
                 return true;
             }
             catch (COMException ex) when (ex.ErrorCode == (int)SynError.Fail)
@@ -143,6 +144,7 @@ namespace SynapticsInput
                 // From Synaptics SDK documentation:
                 //
                 // The device packet queue is empty.
+                Debug.WriteLine("Packet queue is empty");
                 return false;
             }
         }
@@ -168,24 +170,35 @@ namespace SynapticsInput
 
         private void EnsureNotDisposed()
         {
-            if (_disposed) throw new InvalidOperationException("Object already disposed");
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
         }
-        
-        public void Dispose()
+
+        private void Dispose(bool disposing)
         {
             if (_disposed) return;
-            TouchStarted = null;
-            TouchMoved = null;
-            TouchEnded = null;
-            EndTouchCapture();
+            if (disposing)
+            {
+                TouchStarted = null;
+                TouchMoved = null;
+                TouchEnded = null;
+            }
+            StopTouchCapture();
             _device.Deactivate();
             _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         ~SynTouchpadInput()
         {
-            Dispose();
+            Dispose(false);
         }
     }
 }
