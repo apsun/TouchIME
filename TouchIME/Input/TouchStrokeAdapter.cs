@@ -33,6 +33,7 @@ namespace TouchIME.Input
                     value.TouchStarted += OnTouchStarted;
                     value.TouchMoved += OnTouchMoved;
                     value.TouchEnded += OnTouchEnded;
+                    TouchArea = value.TouchArea;
                 }
                 _input = value;
                 Clear();
@@ -44,7 +45,7 @@ namespace TouchIME.Input
         /// of the input source. The coordinate axis is aligned such
         /// that (0,0) is located at the top-left corner.
         /// </summary>
-        public Rectangle TouchArea => Input.TouchArea;
+        public Rectangle TouchArea { get; private set; }
 
         /// <summary>
         /// Gets a read-only list of all strokes, including

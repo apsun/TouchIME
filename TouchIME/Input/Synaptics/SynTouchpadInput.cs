@@ -32,8 +32,8 @@ namespace TouchIME.Input.Synaptics
                 EnsureNotDisposed();
                 int minX = NormalizeX(_device.GetLongProperty(SynDeviceProperty.SP_XLoBorder));
                 int maxX = NormalizeX(_device.GetLongProperty(SynDeviceProperty.SP_XHiBorder));
-                int minY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YLoBorder));
-                int maxY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YHiBorder));
+                int minY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YHiBorder));
+                int maxY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YLoBorder));
                 return Rectangle.FromLTRB(minX, minY, maxX, maxY);
             }
         }
@@ -90,7 +90,7 @@ namespace TouchIME.Input.Synaptics
             {
                 _device.Acquire(0);
             }
-            catch (COMException ex) when (ex.ErrorCode == (int)SynError.AccessDenied)
+            catch (UnauthorizedAccessException ex)
             {
                 // From Synaptics SDK documentation:
                 //

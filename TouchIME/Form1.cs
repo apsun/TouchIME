@@ -26,6 +26,7 @@ namespace TouchIME
 
             _touchInput = TouchInputFactory.CreateInput();
             _touchInput.StartTouchCapture();
+            _touchInput.TouchMoved += _touchInput_TouchMoved;
             ((SynTouchpadInput)_touchInput).TouchEnabled = true;
 
             _touchAdapter = new TouchStrokeAdapter {Input = _touchInput};
@@ -33,8 +34,18 @@ namespace TouchIME
             _recognizer = new TouchRecognizer();
             _recognizer.SetAdapter(_touchAdapter);
             Recognizers re = new Recognizers();
-            _recognizer.SetRecognizer(re[0]);
+            _recognizer.SetRecognizer(re[1]);
             _recognizer.ResultsChanged += RecognizerResultsChanged;
+
+            this.touchStrokeView1.StrokeAdapter = _touchAdapter;
+        }
+
+        private void _touchInput_TouchMoved(object sender, TouchEventArgs e)
+        {
+            /*label1.Invoke(new Action(() =>
+            {
+                label1.Text = e.Location.ToString();
+            }));*/
         }
 
         private void RecognizerResultsChanged(object sender, TouchRecognitionEventArgs e)

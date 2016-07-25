@@ -30,6 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.touchStrokeView1 = new TouchIME.Controls.TouchStrokeView();
             this.SuspendLayout();
             // 
             // label1
@@ -52,11 +53,21 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // touchStrokeView1
+            // 
+            this.touchStrokeView1.Location = new System.Drawing.Point(223, 33);
+            this.touchStrokeView1.Name = "touchStrokeView1";
+            this.touchStrokeView1.Size = new System.Drawing.Size(456, 298);
+            this.touchStrokeView1.StrokeAdapter = null;
+            this.touchStrokeView1.TabIndex = 2;
+            this.touchStrokeView1.Text = "touchStrokeView1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(732, 408);
+            this.Controls.Add(this.touchStrokeView1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
@@ -70,6 +81,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
+        private Controls.TouchStrokeView touchStrokeView1;
     }
 }
 

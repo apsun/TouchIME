@@ -1,6 +1,6 @@
 ﻿namespace TouchIME.Controls
 {
-    partial class TouchStrokeView
+    sealed partial class TouchStrokeView
     {
         /// <summary> 
         /// Required designer variable.
