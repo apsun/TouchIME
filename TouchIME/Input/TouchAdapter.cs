@@ -5,10 +5,9 @@ using System.Drawing;
 namespace TouchIME.Input
 {
     /// <summary>
-    /// Adapts raw touch input into "strokes". Also serves as a single
-    /// point of mutability to simplify hot-swapping of input soures.
+    /// Interprets raw touch input into strokes.
     /// </summary>
-    public sealed class TouchStrokeAdapter
+    public sealed class TouchAdapter
     {
         private ITouchInput _input;
 
@@ -33,7 +32,6 @@ namespace TouchIME.Input
                     value.TouchStarted += OnTouchStarted;
                     value.TouchMoved += OnTouchMoved;
                     value.TouchEnded += OnTouchEnded;
-                    TouchArea = value.TouchArea;
                 }
                 _input = value;
                 Clear();
@@ -41,23 +39,32 @@ namespace TouchIME.Input
         }
 
         /// <summary>
-        /// Gets a rectangle describing the area (touchable region)
+        /// Gets a rectangle describing the entire area (touchable region)
         /// of the input source. The coordinate axis is aligned such
         /// that (0,0) is located at the top-left corner.
         /// </summary>
-        public Rectangle TouchArea { get; private set; }
+        public Rectangle TouchArea => Input?.TouchArea ?? new Rectangle();
 
         /// <summary>
-        /// Gets a read-only list of all strokes, including
-        /// the current incomplete stroke. You must not modify
-        /// the returned list.
+        /// Gets or sets a rectangle describing the area (touchable
+        /// region) of the input source that is used to enter strokes.
+        /// The coordinate axis is aligned such that (0,0) is located
+        /// at the top-left corner. This must be a subrectangle of the
+        /// input touch area.
+        /// </summary>
+        public Rectangle StrokeArea { get; set; }
+
+        /// <summary>
+        /// Gets a list of all strokes, including the current
+        /// incomplete stroke. This is returned as a List for
+        /// performance reasons; you must not modify it.
         /// </summary>
         public List<List<Point>> Strokes { get; } = new List<List<Point>>();
 
         /// <summary>
         /// Gets the current (incomplete) stroke, or null if
-        /// there is no current stroke. You must not modify the
-        /// returned list.
+        /// there is no current stroke. This is returned as a
+        /// List for performance reasons; you must not modify it.
         /// </summary>
         public List<Point> CurrentStroke { get; private set; }
 

@@ -55,10 +55,12 @@
             // 
             // touchStrokeView1
             // 
+            this.touchStrokeView1.Adapter = null;
+            this.touchStrokeView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.touchStrokeView1.ForeColor = System.Drawing.Color.Red;
             this.touchStrokeView1.Location = new System.Drawing.Point(223, 33);
             this.touchStrokeView1.Name = "touchStrokeView1";
-            this.touchStrokeView1.Size = new System.Drawing.Size(456, 298);
-            this.touchStrokeView1.StrokeAdapter = null;
+            this.touchStrokeView1.Size = new System.Drawing.Size(470, 264);
             this.touchStrokeView1.TabIndex = 2;
             this.touchStrokeView1.Text = "touchStrokeView1";
             // 

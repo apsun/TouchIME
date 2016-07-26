@@ -11,7 +11,7 @@ namespace TouchIME
     public partial class Form1 : Form
     {
         private ITouchInput _touchInput;
-        private TouchStrokeAdapter _touchAdapter;
+        private TouchAdapter _touchAdapter;
         private HotkeyManager _hotkeyManager;
         private TouchRecognizer _recognizer;
 
@@ -29,7 +29,11 @@ namespace TouchIME
             _touchInput.TouchMoved += _touchInput_TouchMoved;
             ((SynTouchpadInput)_touchInput).TouchEnabled = true;
 
-            _touchAdapter = new TouchStrokeAdapter {Input = _touchInput};
+            _touchAdapter = new TouchAdapter
+            {
+                Input = _touchInput,
+                StrokeArea = _touchInput.TouchArea
+            };
 
             _recognizer = new TouchRecognizer();
             _recognizer.SetAdapter(_touchAdapter);
@@ -37,7 +41,7 @@ namespace TouchIME
             _recognizer.SetRecognizer(re[1]);
             _recognizer.ResultsChanged += RecognizerResultsChanged;
 
-            this.touchStrokeView1.StrokeAdapter = _touchAdapter;
+            this.touchStrokeView1.Adapter = _touchAdapter;
         }
 
         private void _touchInput_TouchMoved(object sender, TouchEventArgs e)
@@ -81,6 +85,11 @@ namespace TouchIME
         {
             _hotkeyManager?.HandleWndProc(ref m);
             base.WndProc(ref m);
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

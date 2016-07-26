@@ -1,21 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using TouchIME.Input;
 
 namespace TouchIME.Controls
 {
-    public sealed partial class TouchStrokeView : Control
+    /// <summary>
+    /// Displays touch stroke input.
+    /// </summary>
+    public sealed partial class TouchStrokeView : Panel
     {
-        private TouchStrokeAdapter _strokeAdapter;
+        private TouchAdapter _adapter;
+        private float _strokeWidth = 2.0f;
 
-        public TouchStrokeAdapter StrokeAdapter
+        /// <summary>
+        /// Gets or sets the width of 
+        /// </summary>
+        [Browsable(true)]
+        [DefaultValue(2.0f)]
+        [Description("The width used to draw strokes in the control.")]
+        public float StrokeWidth
         {
-            get { return _strokeAdapter; }
+            get { return _strokeWidth; }
             set
             {
-                TouchStrokeAdapter oldAdapter = _strokeAdapter;
+                if (_strokeWidth == value) return;
+                _strokeWidth = value;
+                Invalidate();
+            }
+        }
+
+        public TouchAdapter Adapter
+        {
+            get { return _adapter; }
+            set
+            {
+                TouchAdapter oldAdapter = _adapter;
                 if (oldAdapter == value) return;
                 if (oldAdapter != null)
                 {
@@ -27,7 +49,7 @@ namespace TouchIME.Controls
                     value.StrokeChanged += OnStrokesChanged;
                     value.StrokesCleared += OnStrokesChanged;
                 }
-                _strokeAdapter = value;
+                _adapter = value;
                 Invalidate();
             }
         }
@@ -45,7 +67,7 @@ namespace TouchIME.Controls
 
         private Point[] TranslatePoints(List<Point> stroke)
         {
-            Rectangle touchArea = _strokeAdapter.TouchArea;
+            Rectangle touchArea = _adapter.TouchArea;
             Point[] points = new Point[stroke.Count];
             for (int i = 0; i < points.Length; ++i)
             {
@@ -62,13 +84,16 @@ namespace TouchIME.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (_strokeAdapter != null)
+            if (_adapter != null)
             {
-                foreach (List<Point> stroke in _strokeAdapter.Strokes)
+                using (Pen pen = new Pen(ForeColor, StrokeWidth))
                 {
-                    if (stroke.Count >= 2)
+                    foreach (List<Point> stroke in _adapter.Strokes)
                     {
-                        e.Graphics.DrawLines(Pens.Red, TranslatePoints(stroke));
+                        if (stroke.Count >= 2)
+                        {
+                            e.Graphics.DrawLines(pen, TranslatePoints(stroke));
+                        }
                     }
                 }
             }

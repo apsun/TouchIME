@@ -16,7 +16,7 @@ namespace TouchIME.Recognition
         private readonly Ink _ink;
         private readonly Strokes _strokes;
         private readonly List<string> _recognitionResults;
-        private TouchStrokeAdapter _inputAdapter;
+        private TouchAdapter _inputAdapter;
         private RecognizerContext _recognizerContext;
         private bool _disposed;
 
@@ -25,6 +25,11 @@ namespace TouchIME.Recognition
         /// </summary>
         public event EventHandler<TouchRecognitionEventArgs> ResultsChanged;
 
+        /// <summary>
+        /// Initializes the touch recognizer. You must also set an
+        /// input adapter with <see cref="SetAdapter(TouchAdapter)"/>
+        /// and a text recognizer with <see cref="SetRecognizer(Recognizer)"/>.
+        /// </summary>
         public TouchRecognizer()
         {
             _ink = new Ink();
@@ -36,10 +41,10 @@ namespace TouchIME.Recognition
         /// Sets the stroke input source.
         /// </summary>
         /// <param name="newAdapter">The new input source.</param>
-        public void SetAdapter(TouchStrokeAdapter newAdapter)
+        public void SetAdapter(TouchAdapter newAdapter)
         {
             EnsureNotDisposed();
-            TouchStrokeAdapter oldAdapter = _inputAdapter;
+            TouchAdapter oldAdapter = _inputAdapter;
             if (oldAdapter != null)
             {
                 oldAdapter.StrokeFinished -= OnStrokeFinished;
@@ -51,6 +56,7 @@ namespace TouchIME.Recognition
                 newAdapter.StrokesCleared += OnStrokesCleared;
             }
             _inputAdapter = newAdapter;
+            OnStrokesCleared(this, EventArgs.Empty);
         }
 
         /// <summary>
