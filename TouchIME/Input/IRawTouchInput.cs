@@ -6,7 +6,7 @@ namespace TouchIME.Input
     /// <summary>
     /// Interface to a touch input source.
     /// </summary>
-    public interface ITouchInput : IDisposable
+    public interface IRawTouchInput : IDisposable
     {
         /// <summary>
         /// Event raised when the user begins touching the device. This
@@ -20,7 +20,7 @@ namespace TouchIME.Input
         /// This is only raised after calling <see cref="StartTouchCapture"/>
         /// and before calling <see cref="StopTouchCapture"/>. 
         /// </summary>
-        event EventHandler<TouchEventArgs> TouchMoved;
+        event EventHandler<RawTouchEventArgs> TouchMoved;
 
         /// <summary>
         /// Event raised when the user stops touching the device. This
@@ -35,6 +35,14 @@ namespace TouchIME.Input
         /// that (0,0) is located at the top-left corner.
         /// </summary>
         Rectangle TouchArea { get; }
+
+        /// <summary>
+        /// Gets or sets whether the device responds to input.
+        /// </summary>
+        /// <exception cref="NotSupportedException">
+        /// Thrown if the device cannot be enabled/disabled.
+        /// </exception>
+        bool TouchEnabled { get; set; }
 
         /// <summary>
         /// Begins touch capturing. This blocks all normal input from

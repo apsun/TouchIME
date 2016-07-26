@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-
-namespace TouchIME.Input
+﻿namespace TouchIME.Input
 {
     /// <summary>
     /// Event data for a stroke event. Note that this is a
@@ -10,16 +7,15 @@ namespace TouchIME.Input
     public struct TouchStrokeEventArgs
     {
         /// <summary>
-        /// The points that make up the stroke. This is returned as a
-        /// List for performance reasons; you must not modify it.
+        /// Gets the stroke data associated with this event.
         /// </summary>
-        public List<Point> Stroke { get; }
+        public TouchStroke Stroke { get; }
 
         /// <summary>
-        /// Initializes the stroke event data with the given point list. 
+        /// Initializes the event data with the given stroke.
         /// </summary>
-        /// <param name="stroke">The points that make up the stroke.</param>
-        public TouchStrokeEventArgs(List<Point> stroke)
+        /// <param name="stroke">The stroke data.</param>
+        public TouchStrokeEventArgs(TouchStroke stroke)
         {
             Stroke = stroke;
         }

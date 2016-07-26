@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -8,67 +7,53 @@ using TouchIME.Input;
 namespace TouchIME.Controls
 {
     /// <summary>
-    /// Displays touch stroke input.
+    /// Displays touch strokes.
     /// </summary>
-    public sealed partial class TouchStrokeView : Panel
+    public sealed partial class StrokeDisplay : Panel
     {
-        private TouchAdapter _adapter;
         private float _strokeWidth = 2.0f;
+        private IReadOnlyList<TouchStroke> _strokes;
 
         /// <summary>
-        /// Gets or sets the width of 
+        /// Gets or sets the stroke width.
         /// </summary>
         [Browsable(true)]
         [DefaultValue(2.0f)]
-        [Description("The width used to draw strokes in the control.")]
+        [Description("The width of strokes drawn in the control.")]
         public float StrokeWidth
         {
             get { return _strokeWidth; }
             set
             {
-                if (_strokeWidth == value) return;
-                _strokeWidth = value;
-                Invalidate();
+                if (_strokeWidth != value)
+                {
+                    _strokeWidth = value;
+                    Invalidate();
+                }
             }
         }
 
-        public TouchAdapter Adapter
-        {
-            get { return _adapter; }
-            set
-            {
-                TouchAdapter oldAdapter = _adapter;
-                if (oldAdapter == value) return;
-                if (oldAdapter != null)
-                {
-                    oldAdapter.StrokeChanged -= OnStrokesChanged;
-                    oldAdapter.StrokesCleared -= OnStrokesChanged;
-                }
-                if (value != null)
-                {
-                    value.StrokeChanged += OnStrokesChanged;
-                    value.StrokesCleared += OnStrokesChanged;
-                }
-                _adapter = value;
-                Invalidate();
-            }
-        }
-
-        public TouchStrokeView()
+        public StrokeDisplay()
         {
             InitializeComponent();
             DoubleBuffered = true;
         }
 
-        private void OnStrokesChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Updates the list of strokes used to render this control.
+        /// The list must remain valid until the next call to
+        /// <see cref="UpdateStrokes(IReadOnlyList{TouchStroke})"/>.
+        /// </summary>
+        public void UpdateStrokes(IReadOnlyList<TouchStroke> strokes)
         {
+            _strokes = strokes;
             Invalidate();
         }
 
-        private Point[] TranslatePoints(List<Point> stroke)
+        private Point[] TranslatePoints(TouchStroke stroke)
         {
-            Rectangle touchArea = _adapter.TouchArea;
-            Point[] points = new Point[stroke.Count];
+            Rectangle touchArea = stroke.TouchArea;
+            Point[] points = new Point[stroke.PointCount];
             for (int i = 0; i < points.Length; ++i)
             {
                 Point strokePoint = stroke[i];
@@ -84,13 +69,14 @@ namespace TouchIME.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (_adapter != null)
+            IReadOnlyList<TouchStroke> strokes = _strokes;
+            if (strokes != null)
             {
                 using (Pen pen = new Pen(ForeColor, StrokeWidth))
                 {
-                    foreach (List<Point> stroke in _adapter.Strokes)
+                    foreach (TouchStroke stroke in strokes)
                     {
-                        if (stroke.Count >= 2)
+                        if (stroke.PointCount >= 2)
                         {
                             e.Graphics.DrawLines(pen, TranslatePoints(stroke));
                         }

@@ -10,7 +10,7 @@ namespace TouchIME.Input.Synaptics
     /// <summary>
     /// Managed wrapper for the Synaptics touchpad API.
     /// </summary>
-    public sealed class SynTouchpadInput : ITouchInput
+    public sealed class SynTouchpadInput : IRawTouchInput
     {
         private readonly SynDeviceCtrl _device = new SynDeviceCtrl();
         private readonly SynAPICtrl _api = new SynAPICtrl();
@@ -22,7 +22,7 @@ namespace TouchIME.Input.Synaptics
         private bool _disposed;
         
         public event EventHandler TouchStarted;
-        public event EventHandler<TouchEventArgs> TouchMoved;
+        public event EventHandler<RawTouchEventArgs> TouchMoved;
         public event EventHandler TouchEnded;
         
         public Rectangle TouchArea
@@ -30,17 +30,14 @@ namespace TouchIME.Input.Synaptics
             get
             {
                 EnsureNotDisposed();
-                int minX = NormalizeX(_device.GetLongProperty(SynDeviceProperty.SP_XLoBorder));
-                int maxX = NormalizeX(_device.GetLongProperty(SynDeviceProperty.SP_XHiBorder));
-                int minY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YHiBorder));
-                int maxY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YLoBorder));
+                int minX = NormalizeX(_device.GetLongProperty(SynDeviceProperty.SP_XLoSensor));
+                int maxX = NormalizeX(_device.GetLongProperty(SynDeviceProperty.SP_XHiSensor));
+                int minY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YHiSensor));
+                int maxY = NormalizeY(_device.GetLongProperty(SynDeviceProperty.SP_YLoSensor));
                 return Rectangle.FromLTRB(minX, minY, maxX, maxY);
             }
         }
 
-        /// <summary>
-        /// Gets or sets whether the touchpad responds to input.
-        /// </summary>
         public bool TouchEnabled
         {
             get
@@ -109,7 +106,11 @@ namespace TouchIME.Input.Synaptics
             _device.OnPacket -= OnDevicePacket;
             _device.Unacquire();
             _acquired = false;
-            _touching = false;
+            if (_touching)
+            {
+                TouchEnded?.Invoke(this, EventArgs.Empty);
+                _touching = false;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -164,7 +165,7 @@ namespace TouchIME.Input.Synaptics
             {
                 int x = NormalizeX(_packet.XRaw);
                 int y = NormalizeY(_packet.YRaw);
-                TouchMoved?.Invoke(this, new TouchEventArgs(x, y));
+                TouchMoved?.Invoke(this, new RawTouchEventArgs(x, y));
             }
         }
 

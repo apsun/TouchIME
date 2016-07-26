@@ -8,17 +8,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TouchIME.Windows
-{/*
-    public class GlobalHookManager
-    {
-        
+{
+    public class HookManager
+    {/*
+        private const int WhKeyboardLowLevel = 13;
+        private const int WmKeyDown = 0x0100;
+        private const int WmKeyUp = 0x0101;
+
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
         {
             using (Process curProcess = Process.GetCurrentProcess())
             using (ProcessModule curModule = curProcess.MainModule)
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc,
-                    GetModuleHandle(curModule.ModuleName), 0);
+                IntPtr moduleHandle = GetModuleHandle(curModule.ModuleName);
+                return SetWindowsHookEx(WhKeyboardLowLevel, proc, moduleHandle, 0);
             }
         }
 
@@ -26,26 +29,25 @@ namespace TouchIME.Windows
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+            if (nCode >= 0 && wParam == (IntPtr)WmKeyDown)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
                 Console.WriteLine((Keys)vkCode);
             }
 
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+            return CallNextHookEx(TODO, nCode, wParam, lParam);
         }
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+        private static extern IntPtr SetWindowsHookEx(int type, LowLevelKeyboardProc hook, IntPtr module, uint threadId);
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+        private static extern bool UnhookWindowsHookEx(IntPtr hook);
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+        private static extern IntPtr CallNextHookEx(IntPtr hook, int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-    }*/
+        private static extern IntPtr GetModuleHandle(string lpModuleName);*/
+    }
 }
-

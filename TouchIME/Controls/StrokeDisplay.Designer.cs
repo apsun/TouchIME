@@ -1,6 +1,6 @@
 ﻿namespace TouchIME.Controls
 {
-    sealed partial class TouchStrokeView
+    sealed partial class StrokeDisplay
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,14 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // TouchStrokeView
-            // 
-            this.Name = "TouchStrokeView";
-            this.Size = new System.Drawing.Size(791, 513);
-            this.ResumeLayout(false);
-
+            
         }
 
         #endregion

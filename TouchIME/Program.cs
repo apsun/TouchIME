@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using TouchIME.Controls;
 
 namespace TouchIME
 {
@@ -13,7 +14,7 @@ namespace TouchIME
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new InputForm());
         }
     }
 }
