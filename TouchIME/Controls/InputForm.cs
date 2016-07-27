@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Microsoft.Ink;
 using Microsoft.Win32;
 using TouchIME.Input;
 using TouchIME.Recognition;
@@ -38,18 +37,17 @@ namespace TouchIME.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
             _input = TouchInputFactory.Create(RawTouchInputSource.Synaptics);
             _input.StartTouchCapture();
             _input.TouchEnabled = true;
             _input.StrokeChanged += OnStrokeChanged;
             _input.StrokeFinished += OnStrokeFinished;
-
-            Recognizer[] res = RecognizerHelper.GetAll();
-            comboBox1.Items.AddRange(res);
-            comboBox1.DisplayMember = "Name";
+            
             _recognizer = new StrokeRecognizer();
-            _recognizer.SetRecognizer(RecognizerHelper.GetDefault());
+            StrokeRecognizerEngine[] engines = _recognizer.GetAllEngines();
+            comboBox1.Items.AddRange(engines);
+            comboBox1.DisplayMember = "Name";
+            comboBox1.SelectedItem = _recognizer.GetDefaultEngine();
             SystemEvents.PowerModeChanged += OnPowerModeChanged;
 
             _keyboardManager = new KeyboardManager();
@@ -102,8 +100,11 @@ namespace TouchIME.Controls
 
         private void OnStrokeFinished(object sender, TouchStrokeEventArgs e)
         {
-            _recognizer.AddStroke(e.Stroke);
-            UpdateStrokeRecognition();
+            BeginInvoke(new Action(() =>
+            {
+                _recognizer.AddStroke(e.Stroke);
+                UpdateStrokeRecognition();
+            }));
         }
 
         private void UpdateStrokeRecognition()
@@ -119,11 +120,8 @@ namespace TouchIME.Controls
                 Debug.WriteLine(ex);
                 return;
             }
-            listBox1.BeginInvoke(new Action(() =>
-            {
-                listBox1.Items.Clear();
-                listBox1.Items.AddRange(results.ToArray());
-            }));
+            listBox1.Items.Clear();
+            listBox1.Items.AddRange(results.ToArray());
         }
         
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -134,6 +132,7 @@ namespace TouchIME.Controls
             _input.Dispose();
             _input = null;
             _keyboardManager.UninstallHook();
+            _recognizer.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -143,7 +142,7 @@ namespace TouchIME.Controls
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _recognizer.SetRecognizer((Recognizer)comboBox1.SelectedItem);
+            _recognizer.SetEngine(((StrokeRecognizerEngine)comboBox1.SelectedItem).Id);
             UpdateStrokeRecognition();
         }
     }

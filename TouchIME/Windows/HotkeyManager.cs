@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -115,6 +116,14 @@ namespace TouchIME.Windows
                 }
             }
             return false;
+        }
+
+        ~HotkeyManager()
+        {
+            if (_hotkeys.Count > 0)
+            {
+                Debug.WriteLine("HotkeyManager finalized before unregistering hotkeys!");
+            }
         }
     }
 }

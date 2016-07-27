@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Ink;
 using TouchIME.Input;
 
@@ -10,6 +12,7 @@ namespace TouchIME.Recognition
     /// </summary>
     public sealed class StrokeRecognizer : IDisposable
     {
+        private readonly Recognizers _recognizers = new Recognizers();
         private readonly Ink _ink;
         private readonly Strokes _strokes;
         private RecognizerContext _recognizerContext;
@@ -17,7 +20,7 @@ namespace TouchIME.Recognition
 
         /// <summary>
         /// Initializes the stroke recognizer. You must set a recognizer
-        /// implementation with <see cref="SetRecognizer(Recognizer)"/> before
+        /// implementation with <see cref="SetEngine"/> before
         /// calling <see cref="Recognize(int)"/>. 
         /// </summary>
         public StrokeRecognizer()
@@ -25,16 +28,49 @@ namespace TouchIME.Recognition
             _ink = new Ink();
             _strokes = _ink.Strokes;
         }
+        
+        /// <summary>
+        /// Gets all available recognizer engines installed on the computer.
+        /// </summary>
+        public StrokeRecognizerEngine[] GetAllEngines()
+        {
+            return _recognizers
+                .Cast<Recognizer>()
+                .Where(x => x.Languages.Length > 0)
+                .Select(x => new StrokeRecognizerEngine(x.Name, x.Id))
+                .ToArray();
+        }
 
         /// <summary>
-        /// Sets the recognizer used to convert strokes to text.
+        /// Gets the default recognizer engine for the current language,
+        /// or null if none is available.
         /// </summary>
-        /// <param name="recognizer">The new text recognizer.</param>
-        public void SetRecognizer(Recognizer recognizer)
+        public StrokeRecognizerEngine GetDefaultEngine()
+        {
+            Recognizer engineImpl = _recognizers.GetDefaultRecognizer();
+            if (engineImpl == null) return null;
+            return new StrokeRecognizerEngine(engineImpl.Name, engineImpl.Id);
+        }
+
+        /// <summary>
+        /// Sets the recognizer engine used to convert strokes to text.
+        /// </summary>
+        /// <param name="engineId">The GUID of the recognizer engine.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown if the engine is invalid or does not exist.
+        /// </exception>
+        public void SetEngine(Guid engineId)
         {
             EnsureNotDisposed();
             _recognizerContext?.Dispose();
-            _recognizerContext = recognizer?.CreateRecognizerContext();
+            Recognizer engineImpl = _recognizers
+                .Cast<Recognizer>()
+                .FirstOrDefault(x => x.Id == engineId);
+            if (engineImpl == null)
+            {
+                throw new ArgumentException("Engine not found: " + engineId);
+            }
+            _recognizerContext = engineImpl.CreateRecognizerContext();
         }
 
         /// <summary>
@@ -119,6 +155,14 @@ namespace TouchIME.Recognition
             _strokes.Dispose();
             _ink.Dispose();
             _disposed = true;
+        }
+
+        ~StrokeRecognizer()
+        {
+            if (!_disposed)
+            {
+                Debug.WriteLine("StrokeRecognizer finalized without Dispose!");
+            }
         }
     }
 }

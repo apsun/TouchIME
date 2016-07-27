@@ -125,5 +125,13 @@ namespace TouchIME.Windows
             }
             return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
         }
+
+        ~KeyboardManager()
+        {
+            if (_hook != IntPtr.Zero)
+            {
+                Debug.WriteLine("KeyboardManager finalized before uninstalling hook!");
+            }
+        }
     }
 }

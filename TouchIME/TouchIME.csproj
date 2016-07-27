@@ -77,7 +77,6 @@
     <Compile Include="Input\TouchStroke.cs" />
     <Compile Include="Input\TouchInput.cs" />
     <Compile Include="Input\TouchStrokeEventArgs.cs" />
-    <Compile Include="Recognition\RecognizerHelper.cs" />
     <Compile Include="Recognition\StrokeRecognitionException.cs" />
     <Compile Include="Recognition\StrokeRecognizer.cs" />
     <Compile Include="Controls\InputForm.cs">
@@ -89,6 +88,7 @@
     <Compile Include="Controls\StrokeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Recognition\StrokeRecognizerEngine.cs" />
     <Compile Include="Windows\GlobalKeyEventArgs.cs" />
     <Compile Include="Windows\HotkeyManager.cs" />
     <Compile Include="Windows\Key.cs" />

@@ -127,6 +127,7 @@ namespace TouchIME.Input.Synaptics
 
         private bool LoadPacket()
         {
+            // if (_disposed) return false;
             try
             {
                 return _device.LoadPacket(_packet) == 0;
@@ -152,6 +153,8 @@ namespace TouchIME.Input.Synaptics
 
         private void OnDevicePacket()
         {
+            // WARNING: This is called on a separate thread from the thread
+            // that initialized the object!
             if (!LoadPacket()) return;
             int fingerState = _packet.FingerState;
             bool touching = (fingerState & (int)SynFingerFlags.SF_FingerPresent) != 0;
@@ -177,29 +180,19 @@ namespace TouchIME.Input.Synaptics
             }
         }
 
-        private void Dispose(bool disposing)
+        public void Dispose()
         {
             if (_disposed) return;
-            if (disposing)
-            {
-                TouchStarted = null;
-                TouchMoved = null;
-                TouchEnded = null;
-            }
-            StopTouchCapture();
             _device.Deactivate();
             _disposed = true;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         ~SynTouchpadInput()
         {
-            Dispose(false);
+            if (!_disposed)
+            {
+                Debug.WriteLine("SynTouchpadInput finalized without Dispose!");
+            }
         }
     }
 }
