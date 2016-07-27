@@ -4,7 +4,7 @@
     /// Various input sources for use with <see cref="TouchInputFactory"/>.
     /// Currently only Synaptics touchpads are supported.
     /// </summary>
-    public enum RawTouchInputType
+    public enum RawTouchInputSource
     {
         Synaptics,
     }

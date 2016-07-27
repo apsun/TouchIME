@@ -9,7 +9,7 @@ namespace TouchIME.Controls
     /// <summary>
     /// Displays touch strokes.
     /// </summary>
-    public sealed partial class StrokeDisplay : Panel
+    public sealed class StrokeView : Panel
     {
         private float _strokeWidth = 2.0f;
         private IReadOnlyList<TouchStroke> _strokes;
@@ -33,9 +33,8 @@ namespace TouchIME.Controls
             }
         }
 
-        public StrokeDisplay()
+        public StrokeView()
         {
-            InitializeComponent();
             DoubleBuffered = true;
         }
 

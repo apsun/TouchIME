@@ -58,8 +58,10 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\ConfigForm.cs">
@@ -68,7 +70,10 @@
     <Compile Include="Controls\ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Input\RawTouchInputType.cs" />
+    <Compile Include="Controls\AnchoredForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Input\RawTouchInputSource.cs" />
     <Compile Include="Input\TouchStroke.cs" />
     <Compile Include="Input\TouchInput.cs" />
     <Compile Include="Input\TouchStrokeEventArgs.cs" />
@@ -81,15 +86,14 @@
     <Compile Include="Controls\InputForm.Designer.cs">
       <DependentUpon>InputForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\StrokeDisplay.cs">
+    <Compile Include="Controls\StrokeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\StrokeDisplay.Designer.cs">
-      <DependentUpon>StrokeDisplay.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Windows\GlobalKeyEventArgs.cs" />
     <Compile Include="Windows\HotkeyManager.cs" />
     <Compile Include="Windows\Key.cs" />
-    <Compile Include="Windows\HookManager.cs" />
+    <Compile Include="Windows\KeyboardManager.cs" />
+    <Compile Include="Windows\LtrbRectangle.cs" />
     <Compile Include="Windows\Modifiers.cs" />
     <Compile Include="Windows\InputHelper.cs" />
     <Compile Include="Input\IRawTouchInput.cs" />
@@ -107,9 +111,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InputForm.resx">
       <DependentUpon>InputForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\StrokeDisplay.resx">
-      <DependentUpon>StrokeDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
