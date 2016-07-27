@@ -7,10 +7,9 @@ using System.Windows.Forms;
 namespace TouchIME.Windows
 {
     /// <summary>
-    /// Manages hotkeys using the <code>RegisterHotKey</code> Windows API.
-    /// Note that this class cannot automatically free hotkeys once it is
-    /// garbage collected; you must manually unregister all hotkeys once
-    /// they are no longer needed.
+    /// Manages hotkeys using the <code>RegisterHotKey</code>
+    /// Windows API. Note that you must manually unregister
+    /// hotkeys once they are no longer needed.
     /// </summary>
     public sealed class HotkeyManager
     {

@@ -100,15 +100,22 @@ namespace TouchIME.Input
         
         private void OnTouchMoved(object sender, RawTouchEventArgs e)
         {
-            CurrentStroke.AddPoint(e.Location);
-            StrokeChanged?.Invoke(this, EventArgs.Empty);
+            TouchStroke stroke = CurrentStroke;
+            if (stroke != null)
+            {
+                stroke.AddPoint(e.Location);
+                StrokeChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void OnTouchEnded(object sender, EventArgs e)
         {
             TouchStroke stroke = CurrentStroke;
             CurrentStroke = null;
-            StrokeFinished?.Invoke(this, new TouchStrokeEventArgs(stroke));
+            if (stroke != null)
+            {
+                StrokeFinished?.Invoke(this, new TouchStrokeEventArgs(stroke));
+            }
         }
 
         public void Dispose()

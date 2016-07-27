@@ -87,7 +87,15 @@ namespace TouchIME.Recognition
             {
                 throw new StrokeRecognitionException("Recognition status: " + status);
             }
-            RecognitionAlternates alternates = recognizeResult.GetAlternatesFromSelection(0, -1, maxResults);
+            RecognitionAlternates alternates;
+            try
+            {
+                alternates = recognizeResult.GetAlternatesFromSelection(0, -1, maxResults);
+            }
+            catch (Exception ex)
+            {
+                throw new StrokeRecognitionException("Failed to get alternates", ex);
+            }
             List<string> results = new List<string>(alternates.Count);
             foreach (RecognitionAlternate alternate in alternates)
             {

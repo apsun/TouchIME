@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Ink;
 using Microsoft.Win32;
@@ -107,7 +108,17 @@ namespace TouchIME.Controls
 
         private void UpdateStrokeRecognition()
         {
-            List<string> results = _recognizer.Recognize();
+            List<string> results;
+            try
+            {
+                results = _recognizer.Recognize();
+            }
+            catch (StrokeRecognitionException ex)
+            {
+                Debug.WriteLine("Failed to recognize strokes:");
+                Debug.WriteLine(ex);
+                return;
+            }
             listBox1.BeginInvoke(new Action(() =>
             {
                 listBox1.Items.Clear();

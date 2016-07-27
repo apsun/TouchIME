@@ -48,6 +48,14 @@ namespace TouchIME.Input
         }
 
         /// <summary>
+        /// Removes all points from the stroke.
+        /// </summary>
+        internal void ClearPoints()
+        {
+            _points.Clear();
+        }
+
+        /// <summary>
         /// Gets an array containing all points in the stroke.
         /// </summary>
         public Point[] GetPoints()

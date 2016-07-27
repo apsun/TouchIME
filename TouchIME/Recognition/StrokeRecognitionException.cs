@@ -16,5 +16,15 @@ namespace TouchIME.Recognition
         {
 
         }
+
+        /// <summary>
+        /// Creates a new instance of this exception.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="inner">The exception that caused this exception.</param>
+        public StrokeRecognitionException(string message, Exception inner) : base(message, inner)
+        {
+
+        }
     }
 }

@@ -24,11 +24,18 @@ namespace TouchIME.Input
         /// </summary>
         /// <param name="source">The input source.</param>
         /// <exception cref="NotSupportedException">
-        /// Thrown if the input source is not supported/installed on the current system.
+        /// Thrown if the input device could not be initialized.
         /// </exception>
         public static TouchInput Create(RawTouchInputSource source)
         {
-            return new TouchInput(CreateInput(source));
+            try
+            {
+                return new TouchInput(CreateInput(source));
+            }
+            catch (Exception ex)
+            {
+                throw new NotSupportedException("Failed to create input device", ex);
+            }
         }
     }
 }

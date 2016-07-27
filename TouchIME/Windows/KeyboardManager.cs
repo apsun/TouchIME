@@ -39,8 +39,21 @@ namespace TouchIME.Windows
         /// be installed for this event to be raised.
         /// </summary>
         public event EventHandler<GlobalKeyEventArgs> GlobalKeyUp;
-        
+
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        private readonly LowLevelKeyboardProc _callback;
         private IntPtr _hook;
+
+        /// <summary>
+        /// Initializes the keyboard manager. Call <see cref="InstallHook"/>
+        /// to begin receiving key press events. 
+        /// </summary>
+        public KeyboardManager()
+        {
+            // This is necessary to prevent the callback from being GC'd
+            _callback = HookCallback;
+        }
 
         /// <summary>
         /// Installs the global keyboard hook. You must uninstall
@@ -57,7 +70,7 @@ namespace TouchIME.Windows
                 {
                     throw new Win32Exception();
                 }
-                IntPtr hook = SetWindowsHookEx(WhKeyboardLowLevel, HookCallback, moduleHandle, 0);
+                IntPtr hook = SetWindowsHookEx(WhKeyboardLowLevel, _callback, moduleHandle, 0);
                 if (hook == IntPtr.Zero)
                 {
                     throw new Win32Exception();
@@ -92,8 +105,6 @@ namespace TouchIME.Windows
             GlobalKeyUp?.Invoke(this, args);
             return args.Handled;
         }
-
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
