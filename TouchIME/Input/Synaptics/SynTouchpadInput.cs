@@ -12,8 +12,8 @@ namespace TouchIME.Input.Synaptics
     /// </summary>
     public sealed class SynTouchpadInput : IRawTouchInput
     {
-        private readonly SynDeviceCtrl _device = new SynDeviceCtrl();
         private readonly SynAPICtrl _api = new SynAPICtrl();
+        private readonly SynDeviceCtrl _device = new SynDeviceCtrl();
         private readonly SynPacketCtrl _packet = new SynPacketCtrl();
         private readonly int _lowX;
         private readonly int _highY;

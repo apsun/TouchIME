@@ -14,6 +14,7 @@ namespace TouchIME.Controls
         private TouchInput _input;
         private StrokeRecognizer _recognizer;
         private KeyboardManager _keyboardManager;
+        private List<string> _recognizerResults;
 
         private const int WsExNoActivate = 0x08000000;
 
@@ -21,7 +22,7 @@ namespace TouchIME.Controls
         {
             InitializeComponent();
         }
-
+        
         protected override CreateParams CreateParams
         {
             get
@@ -57,11 +58,33 @@ namespace TouchIME.Controls
 
         private void _keyboardManager_GlobalKeyDown(object sender, GlobalKeyEventArgs e)
         {
-            if (e.KeyCode == Key.T)
+            if (_recognizerResults == null) return;
+            if (KeyboardManager.GetModifierState() != Modifiers.None) return;
+            if (e.KeyCode >= Key.D0 && e.KeyCode <= Key.D9)
             {
-                InputHelper.SendKeyboardText("hello");
+                int numericValue = ((int)e.KeyCode - (int)Key.D0 + 9) % 10;
+                if (numericValue < _recognizerResults.Count)
+                {
+                    InputRecognitionResult(numericValue);
+                    e.Handled = true;
+                }
+            }
+            else if (e.KeyCode == Key.Space && _recognizerResults.Count > 0)
+            {
+                InputRecognitionResult(0);
                 e.Handled = true;
             }
+            else if (e.KeyCode == Key.Backspace && _recognizerResults.Count > 0)
+            {
+                ClearStrokes();
+                e.Handled = true;
+            }
+        }
+
+        private void InputRecognitionResult(int index)
+        {
+            InputHelper.SendKeyboardText(_recognizerResults[index]);
+            ClearStrokes();
         }
 
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -92,6 +115,7 @@ namespace TouchIME.Controls
 
         private void ClearStrokes()
         {
+            _recognizerResults = null;
             _input.ClearStrokes();
             _recognizer.ClearStrokes();
             UpdateStrokeRecognition();
@@ -109,10 +133,9 @@ namespace TouchIME.Controls
 
         private void UpdateStrokeRecognition()
         {
-            List<string> results;
             try
             {
-                results = _recognizer.Recognize();
+                _recognizerResults = _recognizer.Recognize();
             }
             catch (StrokeRecognitionException ex)
             {
@@ -120,8 +143,13 @@ namespace TouchIME.Controls
                 Debug.WriteLine(ex);
                 return;
             }
+            object[] resultDisplay = new object[_recognizerResults.Count];
+            for (int i = 0; i < resultDisplay.Length; ++i)
+            {
+                resultDisplay[i] = ((i + 1) % 10) + ". " + _recognizerResults[i];
+            }
             listBox1.Items.Clear();
-            listBox1.Items.AddRange(results.ToArray());
+            listBox1.Items.AddRange(resultDisplay);
         }
         
         protected override void OnFormClosing(FormClosingEventArgs e)

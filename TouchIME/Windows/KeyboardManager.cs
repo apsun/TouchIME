@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace TouchIME.Windows
 {
     /// <summary>
-    /// Manages global keystrokes using the <code>SetWindowsHookEx</code>
+    /// Manages global keyboard state using the <code>SetWindowsHookEx</code>
     /// Windows API. Note that you must manually uninstall the hook once
     /// it is no longer needed.
     /// </summary>
@@ -27,6 +27,9 @@ namespace TouchIME.Windows
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string moduleName);
+
+        [DllImport("user32.dll")]
+        private static extern short GetKeyState(int keyCode);
 
         /// <summary>
         /// Event raised when a key has been pressed. The hook must
@@ -92,6 +95,37 @@ namespace TouchIME.Windows
             _hook = IntPtr.Zero;
         }
 
+        /// <summary>
+        /// Checks whether the specified key is currently being pressed.
+        /// </summary>
+        /// <param name="keyCode">The virtual key code of the key.</param>
+        public static bool IsKeyDown(Key keyCode)
+        {
+            return (GetKeyState((int)keyCode) & 0x8000) != 0;
+        }
+
+        /// <summary>
+        /// Checks whether the specified key is in a toggled state.
+        /// </summary>
+        /// <param name="keyCode">The virtual key code of the key.</param>
+        public static bool IsKeyToggled(Key keyCode)
+        {
+            return (GetKeyState((int)keyCode) & 0x0001) != 0;
+        }
+
+        /// <summary>
+        /// Gets the currently pressed modifier keys.
+        /// </summary>
+        public static Modifiers GetModifierState()
+        {
+            Modifiers mod = Modifiers.None;
+            if (IsKeyDown(Key.Alt)) mod |= Modifiers.Alt;
+            if (IsKeyDown(Key.Control)) mod |= Modifiers.Control;
+            if (IsKeyDown(Key.Shift)) mod |= Modifiers.Shift;
+            if (IsKeyDown(Key.LeftWin) || IsKeyDown(Key.RightWin)) mod |= Modifiers.Win;
+            return mod;
+        }
+
         private bool OnGlobalKeyDown(Key keyCode)
         {
             GlobalKeyEventArgs args = new GlobalKeyEventArgs(keyCode);
@@ -113,6 +147,7 @@ namespace TouchIME.Windows
                 // Lazy way of reading the key code, works because
                 // it's the first member in the KBDLLHOOKSTRUCT structure
                 Key keyCode = (Key)Marshal.ReadInt32(lParam);
+                Debug.WriteLine("Key: " + keyCode);
                 switch (wParam.ToInt32())
                 {
                     case WmKeyDown:
